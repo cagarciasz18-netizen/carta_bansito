@@ -2,116 +2,82 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Ti ❤️</title>
+<title>Feliz San Valentín 💖</title>
+
 <style>
-  body {
+  body, html {
     margin: 0;
-    background: black;
+    padding: 0;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Arial', sans-serif;
-    color: white;
+    background: black;
+    height: 100%;
+    width: 100%;
+    user-select: none;
+    cursor: pointer;
   }
-
-  canvas {
+  
+  #message {
     position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .message {
-    position: absolute;
+    width: 100%;
+    top: 30px;
     text-align: center;
-    z-index: 2;
-    animation: fadeIn 4s;
+    color: #ff4d4d;
+    font-family: 'Arial', sans-serif;
+    font-size: 36px;
+    text-shadow: 0 0 15px #ff0000;
+  }
+  
+  .heart {
+    position: absolute;
+    font-size: 24px;
+    animation: animateHeart 1.2s ease-out forwards;
+    pointer-events: none;
   }
 
-  h1 {
-    font-size: 2.2em;
-    margin-bottom: 10px;
-  }
-
-  p {
-    font-size: 1.2em;
-    opacity: 0.9;
-  }
-
-  .tap {
-    margin-top: 20px;
-    font-size: 0.9em;
-    opacity: 0.6;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+  @keyframes animateHeart {
+    0% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2) translateY(-150px);
+    }
   }
 </style>
 </head>
 <body>
 
-<canvas id="canvas"></canvas>
+<div id="message">Toca cualquier parte de la pantalla 💘<br>Yo te elijo 💖<br>Feliz San Valentín ❤️<br>att FOQUITO</div>
 
-<div class="message">
-  <h1>Para ti, mi amor ❤️</h1>
-  <p>
-    Cada latido mío<br>
-    tiene tu nombre.<br>
-    Gracias por existir.
-  </p>
-  <div class="tap">Toca la pantalla 🎶</div>
-</div>
-
-<audio id="music" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_7b7a2f5b31.mp3" type="audio/mpeg">
-</audio>
+<!-- Reproductor oculto de YouTube Music -->
+<iframe id="ytplayer" 
+    type="text/html" 
+    width="0" height="0"
+    src="https://www.youtube.com/embed/ZJR8tuO-mIU?autoplay=1&loop=1&playlist=ZJR8tuO-mIU"
+    frameborder="0">
+</iframe>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// Generar corazones al hacer click/tocar
+document.addEventListener("click", function(e) {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = "❤️";
+  heart.style.left = `${e.clientX - 12}px`;
+  heart.style.top = `${e.clientY - 12}px`;
+  document.body.appendChild(heart);
 
-let particles = [];
+  setTimeout(() => {
+    heart.remove();
+  }, 1200);
+});
 
-function heartFunction(t) {
-  const x = 16 * Math.pow(Math.sin(t), 3);
-  const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t)
-    - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-  return { x, y };
-}
+// Reproducir música automáticamente
+const player = document.getElementById("ytplayer");
 
-for (let i = 0; i < 1000; i++) {
-  const t = Math.random() * Math.PI * 2;
-  const pos = heartFunction(t);
-  particles.push({
-    x: canvas.width / 2 + pos.x * 15,
-    y: canvas.height / 2 + pos.y * 15,
-    alpha: Math.random(),
-    size: Math.random() * 2 + 1
-  });
-}
-
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(255, 100, 150, ${p.alpha})`;
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fill();
-    p.alpha = Math.random();
-  });
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-// Música (solo se activa al tocar)
-document.body.addEventListener("click", () => {
-  document.getElementById("music").play();
+window.addEventListener('load', () => {
+  player.src += "&autoplay=1";
 });
 </script>
 
