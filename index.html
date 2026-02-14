@@ -2,84 +2,182 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Feliz San Valentín 💖</title>
+<title>Atrapa al Foquito 💖</title>
 
 <style>
-  body, html {
+  html, body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
     background: black;
+    overflow: hidden;
+    width: 100%;
     height: 100%;
-    width: 100%;
+    font-family: Arial, sans-serif;
     user-select: none;
-    cursor: pointer;
-  }
-  
-  #message {
-    position: absolute;
-    width: 100%;
-    top: 30px;
-    text-align: center;
-    color: #ff4d4d;
-    font-family: 'Arial', sans-serif;
-    font-size: 36px;
-    text-shadow: 0 0 15px #ff0000;
-  }
-  
-  .heart {
-    position: absolute;
-    font-size: 24px;
-    animation: animateHeart 1.2s ease-out forwards;
-    pointer-events: none;
   }
 
-  @keyframes animateHeart {
-    0% {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-    100% {
+  #title {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    color: #ff6fb7;
+    font-size: 42px;
+    text-shadow: 0 0 15px hotpink;
+    z-index: 10;
+  }
+
+  #seal {
+    position: absolute;
+    width: 180px;
+    cursor: pointer;
+    z-index: 5;
+    transition: all 0.25s ease;
+  }
+
+  .heart {
+    position: absolute;
+    font-size: 28px;
+    pointer-events: none;
+    animation: rise 1.2s ease-out forwards;
+  }
+
+  @keyframes rise {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to { opacity: 0; transform: scale(2.8) translateY(-200px); }
+  }
+
+  .explosion {
+    animation: explode 1.8s ease-out forwards;
+  }
+
+  @keyframes explode {
+    from { opacity: 1; transform: scale(1); }
+    to {
       opacity: 0;
-      transform: scale(2) translateY(-150px);
+      transform: scale(3.5)
+      translate(var(--x), var(--y));
     }
+  }
+
+  #finalMessage {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 20;
+  }
+
+  #finalMessage h1 {
+    color: #ff4d4d;
+    font-size: 50px;
+    text-shadow: 0 0 20px red;
+  }
+
+  #finalMessage h2 {
+    color: #ff69b4;
+    font-size: 72px;
+    text-shadow: 0 0 30px hotpink;
+  }
+
+  #signature {
+    color: #ffd1dc;
+    font-size: 26px;
+    margin-top: 10px;
+  }
+
+  #finalHeart {
+    font-size: 150px;
+    cursor: pointer;
+    animation: pulse 1s infinite alternate;
+  }
+
+  @keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.3); }
   }
 </style>
 </head>
 <body>
 
-<div id="message">Toca cualquier parte de la pantalla 💘<br>Yo te elijo 💖<br>Feliz San Valentín ❤️<br>att FOQUITO</div>
+<div id="title">✨ Atrapa al Foquito ✨</div>
 
-<!-- Reproductor oculto de YouTube Music -->
-<iframe id="ytplayer" 
-    type="text/html" 
-    width="0" height="0"
-    src="https://www.youtube.com/embed/ZJR8tuO-mIU?autoplay=1&loop=1&playlist=ZJR8tuO-mIU"
-    frameborder="0">
+<!-- FOCA LOCAL (NO FALLA EN GITHUB) -->
+<img id="seal" src="foca.jpg" alt="Foquita tierna">
+
+<div id="finalMessage">
+  <h1>FELIZ SAN VALENTÍN</h1>
+  <h2>YO TE ELIJO</h2>
+  <div id="finalHeart">❤️</div>
+  <div id="signature">att FOQUITO</div>
+</div>
+
+<!-- Música -->
+<iframe width="0" height="0"
+  src="https://www.youtube.com/embed/ZJR8tuO-mIU?autoplay=1&loop=1&playlist=ZJR8tuO-mIU"
+  frameborder="0">
 </iframe>
 
 <script>
-// Generar corazones al hacer click/tocar
-document.addEventListener("click", function(e) {
+const seal = document.getElementById("seal");
+const finalMessage = document.getElementById("finalMessage");
+const finalHeart = document.getElementById("finalHeart");
+let touches = 0;
+
+// posición inicial
+moveSeal();
+
+seal.addEventListener("click", (e) => {
+  e.stopPropagation();
+  touches++;
+
+  createHeart(e.clientX, e.clientY);
+  moveSeal();
+
+  if (touches === 10) {
+    finalMessage.style.display = "flex";
+  }
+});
+
+// EXPLOSIÓN ENORME DE CORAZONES 💥💖💖💖
+finalHeart.addEventListener("click", () => {
+  for (let i = 0; i < 80; i++) {
+    const heart = document.createElement("div");
+    heart.textContent = Math.random() > 0.5 ? "💖" : "❤️";
+    heart.className = "heart explosion";
+    heart.style.left = "50%";
+    heart.style.top = "50%";
+    heart.style.setProperty("--x", `${Math.random()*700 - 350}px`);
+    heart.style.setProperty("--y", `${Math.random()*700 - 350}px`);
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 1800);
+  }
+});
+
+function moveSeal() {
+  const x = Math.random() * (window.innerWidth - 200);
+  const y = Math.random() * (window.innerHeight - 260) + 80;
+  seal.style.left = x + "px";
+  seal.style.top = y + "px";
+}
+
+function createHeart(x, y) {
   const heart = document.createElement("div");
   heart.className = "heart";
-  heart.textContent = "❤️";
-  heart.style.left = `${e.clientX - 12}px`;
-  heart.style.top = `${e.clientY - 12}px`;
+  heart.textContent = "💖";
+  heart.style.left = (x - 10) + "px";
+  heart.style.top = (y - 10) + "px";
   document.body.appendChild(heart);
 
-  setTimeout(() => {
-    heart.remove();
-  }, 1200);
-});
-
-// Reproducir música automáticamente
-const player = document.getElementById("ytplayer");
-
-window.addEventListener('load', () => {
-  player.src += "&autoplay=1";
-});
+  setTimeout(() => heart.remove(), 1200);
+}
 </script>
 
 </body>
 </html>
+
