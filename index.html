@@ -44,7 +44,7 @@
 
   @keyframes rise {
     from { opacity: 1; transform: scale(1) translateY(0); }
-    to { opacity: 0; transform: scale(2.8) translateY(-200px); }
+    to { opacity: 0; transform: scale(3) translateY(-220px); }
   }
 
   .explosion {
@@ -55,7 +55,7 @@
     from { opacity: 1; transform: scale(1); }
     to {
       opacity: 0;
-      transform: scale(3.5)
+      transform: scale(4)
       translate(var(--x), var(--y));
     }
   }
@@ -76,12 +76,14 @@
     color: #ff4d4d;
     font-size: 50px;
     text-shadow: 0 0 20px red;
+    margin: 5px;
   }
 
   #finalMessage h2 {
     color: #ff69b4;
     font-size: 72px;
     text-shadow: 0 0 30px hotpink;
+    margin: 5px;
   }
 
   #signature {
@@ -98,7 +100,7 @@
 
   @keyframes pulse {
     from { transform: scale(1); }
-    to { transform: scale(1.3); }
+    to { transform: scale(1.35); }
   }
 </style>
 </head>
@@ -106,7 +108,7 @@
 
 <div id="title">✨ Atrapa al Foquito ✨</div>
 
-<!-- FOCA LOCAL (NO FALLA EN GITHUB) -->
+<!-- FOCA LOCAL -->
 <img id="seal" src="foca.jpg" alt="Foquita tierna">
 
 <div id="finalMessage">
@@ -116,17 +118,24 @@
   <div id="signature">att FOQUITO</div>
 </div>
 
-<!-- Música -->
-<iframe width="0" height="0"
-  src="https://www.youtube.com/embed/ZJR8tuO-mIU?autoplay=1&loop=1&playlist=ZJR8tuO-mIU"
-  frameborder="0">
+<!-- MÚSICA (se activa con el primer toque) -->
+<iframe
+  id="music"
+  width="0"
+  height="0"
+  src=""
+  frameborder="0"
+  allow="autoplay">
 </iframe>
 
 <script>
 const seal = document.getElementById("seal");
 const finalMessage = document.getElementById("finalMessage");
 const finalHeart = document.getElementById("finalHeart");
+const music = document.getElementById("music");
+
 let touches = 0;
+let musicStarted = false;
 
 // posición inicial
 moveSeal();
@@ -134,6 +143,13 @@ moveSeal();
 seal.addEventListener("click", (e) => {
   e.stopPropagation();
   touches++;
+
+  // 🎵 iniciar música solo una vez
+  if (!musicStarted) {
+    music.src =
+      "https://www.youtube.com/embed/ZJR8tuO-mIU?autoplay=1&loop=1&playlist=ZJR8tuO-mIU";
+    musicStarted = true;
+  }
 
   createHeart(e.clientX, e.clientY);
   moveSeal();
@@ -143,16 +159,16 @@ seal.addEventListener("click", (e) => {
   }
 });
 
-// EXPLOSIÓN ENORME DE CORAZONES 💥💖💖💖
+// 💥 EXPLOSIÓN FINAL ENORME
 finalHeart.addEventListener("click", () => {
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 120; i++) {
     const heart = document.createElement("div");
     heart.textContent = Math.random() > 0.5 ? "💖" : "❤️";
     heart.className = "heart explosion";
     heart.style.left = "50%";
     heart.style.top = "50%";
-    heart.style.setProperty("--x", `${Math.random()*700 - 350}px`);
-    heart.style.setProperty("--y", `${Math.random()*700 - 350}px`);
+    heart.style.setProperty("--x", `${Math.random()*900 - 450}px`);
+    heart.style.setProperty("--y", `${Math.random()*900 - 450}px`);
     document.body.appendChild(heart);
 
     setTimeout(() => heart.remove(), 1800);
